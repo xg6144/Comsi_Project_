@@ -3,11 +3,22 @@ package user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import dbconnection.DBConnection;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 public class UserDAO {
+	DataSource ds;
 	public UserDAO() {
-
+		try {
+			InitialContext initContext = new InitialContext();
+			Context context = (Context) initContext.lookup("java:/comp/env");
+			ds = (DataSource) context.lookup("jdbc/collabo");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public int user_login(String userID, String user_pwd) {
@@ -16,7 +27,7 @@ public class UserDAO {
 		ResultSet rs = null;
 		String sql = "select * from user where user_id=?";
 		try {
-			conn = DBConnection.getConnection();
+			conn = ds.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userID);
 			rs = pstmt.executeQuery();
@@ -48,7 +59,7 @@ public class UserDAO {
 		ResultSet rs = null;
 		String sql = "select * from user where user_id=?";
 		try {
-			conn = DBConnection.getConnection();
+			conn = ds.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userID);
 			rs = pstmt.executeQuery();
@@ -75,7 +86,7 @@ public class UserDAO {
 		PreparedStatement pstmt = null;
 		String sql = "insert into user values(?, ?, ?, ?, ?, ?, ?)";
 		try {
-			conn = DBConnection.getConnection();
+			conn = ds.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userID);
 			pstmt.setString(2, user_pwd);

@@ -11,8 +11,9 @@ import javax.sql.DataSource;
 public class DBConnection {
 	public static Connection getConnection() throws SQLException, NamingException,
 	ClassNotFoundException{
-		Context context = new InitialContext();
-		DataSource ds = (DataSource) context.lookup("java:/comp/env/jdbc/HyupUpWebApp");
+		InitialContext initContext = new InitialContext();
+		Context context = (Context) initContext.lookup("java:/comp/env");
+		DataSource ds = (DataSource) context.lookup("jdbc/collabos");
 		Connection conn = ds.getConnection();
 		return conn;
 	}
